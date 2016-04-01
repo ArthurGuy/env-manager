@@ -33,7 +33,7 @@ class Sites extends Model
         return self::create([
             'name'       => $name,
             'created_by' => $userId,
-            'env'        => base64_encode($encrypter->encryptString('foo')),
+            'env'        => base64_encode($encrypter->encryptString('-')),
         ]);
     }
 

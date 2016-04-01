@@ -40,25 +40,6 @@ Route::group(['middleware' => 'web'], function() {
 
     });
 
-    Route::get('kms', function() {
-
-        //return openssl_encrypt('my string to encrypt', 'AES-256-CBC', 0xabc, false, '0000000000000000');
-        //return \Crypt::encrypt('my string to encrypt');
-
-
-        $kms = \App::make('aws')->createClient('kms');
-        //$keys = $kms->listKeys();
-        //dd($keys);
-
-        $key = $kms->encrypt([
-            'KeyId' => '7593d6d3-f4af-4733-90be-77e0f70a35dc',
-            'Plaintext' => 'secret-key',
-        ]);
-        return response($key->get('CiphertextBlob'))->header('content-type', 'plain');
-    });
-
-
     Route::get('/env/{name}', 'envController@get')->name('env.get');
-
 
 });

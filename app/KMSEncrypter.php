@@ -13,7 +13,7 @@ class KMSEncrypter
         $kms = \App::make('aws')->createClient('kms');
 
         $key = $kms->encrypt([
-            'KeyId'     => '7593d6d3-f4af-4733-90be-77e0f70a35dc',
+            'KeyId'     => env('KMS_KEY'),
             'Plaintext' => $string,
         ]);
         return $key->get('CiphertextBlob');
