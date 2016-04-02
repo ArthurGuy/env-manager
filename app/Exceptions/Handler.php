@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Aws\Kms\Exception\KmsException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -33,7 +34,7 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $e)
     {
-        parent::report($e);
+            parent::report($e);
     }
 
     /**
@@ -45,6 +46,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        return parent::render($request, $e);
+        if ($e instanceof KmsException) {
+            return 'KMS Exception, do you have permission to use the key?';
+        } else {
+            return parent::render($request, $e);
+        }
+
     }
 }
