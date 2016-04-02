@@ -212,6 +212,7 @@ return [
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
         'GitHub'    => GrahamCampbell\GitHub\Facades\GitHub::class,
         'AWS' => Aws\Laravel\AwsFacade::class,
+        'Gravatar' => Creativeorange\Gravatar\Facades\Gravatar::class,
     ],
 
 ];

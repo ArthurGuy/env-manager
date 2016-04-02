@@ -32,7 +32,15 @@
                             <li class="nav-item"><a class="nav-link" href="{{ url('/register') }}">Register</a></li>
                         @endif
                     @else
-                        <li class="nav-item"><a class="nav-link" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a></li>
+                        <li class="nav-item">
+                            <span class="nav-link">{{ Auth::user()->name }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i>Logout</a>
+                        </li>
+                        <li class="nav-item">
+                            <img src="{{ \Gravatar::get(Auth::user()->email) }}" width="40" height="40">
+                        </li>
                     @endif
                 </ul>
             </div>
