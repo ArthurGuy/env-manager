@@ -13,6 +13,7 @@
                     <th>Last Viewed</th>
                     <th>Last Edited</th>
                     <th>Created</th>
+                    <th>Last Accessed</th>
                 </thead>
                 <tbody>
                 @foreach ($sites as $site)
@@ -32,6 +33,11 @@
                         </td>
                         <td class="table-text">
                             {{ $site->created_at->format('j/n/y H:i') }} by {{ $site->created_by()->first()->name }}
+                        </td>
+                        <td class="table-text">
+                            @if ($site->accessed_at)
+                                {{ $site->accessed_at->format('j/n/y H:i') }}
+                            @endif
                         </td>
                     </tr>
                 @endforeach

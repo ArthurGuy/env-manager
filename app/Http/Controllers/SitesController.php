@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\AccessLog;
 use Auth;
 use Validator;
 use App\Sites;
@@ -23,8 +24,12 @@ class SitesController extends Controller
         $site = Sites::findOrFail($id);
 
         $site->recordViewedBy(Auth::id());
+        
+        AccessLog::recordAccess($site->id, 'view', Auth::id());
 
-        return view('sites.show', ['site' => $site]);
+        $accessLog = AccessLog::where('site_id', $site->id)->orderBy('created_at', 'desc')->take(50)->get();
+
+        return view('sites.show', ['site' => $site, 'accessLog' => $accessLog]);
     }
 
     public function update(Request $request, $id)
@@ -37,6 +42,8 @@ class SitesController extends Controller
         ]);
 
         $site->edit($request->get('name'), $request->get('env'), Auth::id());
+
+        AccessLog::recordAccess($site->id, 'edit', Auth::id());
 
         $request->session()->put('status', 'Saved');
         return redirect()->route('sites.show', $site->id);
@@ -59,7 +66,9 @@ class SitesController extends Controller
                 ->withErrors($validator);
         }
 
-        Sites::recordNew($request->get('name'), Auth::id());
+        $site = Sites::recordNew($request->get('name'), Auth::id());
+
+        AccessLog::recordAccess($site->id, 'create', Auth::id());
 
         return redirect()->route('sites');
     }

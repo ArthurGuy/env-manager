@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 class Sites extends Model
 {
 
-    protected $dates = ['viewed_at', 'edited_at'];
+    protected $dates = ['viewed_at', 'edited_at', 'accessed_at'];
     protected $with = ['edited_by', 'created_by', 'viewed_by'];
     protected $fillable = ['name', 'created_by', 'env'];
 

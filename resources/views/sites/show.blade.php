@@ -31,6 +31,27 @@
                 rm .env-encrypted
             </pre>
 
+            <h4>Access History</h4>
+            <table class="table">
+                <tr>
+                    <th>Date</th>
+                    <th>Action</th>
+                    <th>User</th>
+                </tr>
+            @foreach($accessLog as $log)
+                <tr>
+                    <td>{{ $log->created_at->format('j/n/y H:i') }}</td>
+                    <td>{{ $log->action }}</td>
+                    <td>
+                        @if($log->user_id)
+                            {{ $log->user()->first()->name }}
+                        @else
+                            {{ $log->ip_address }}
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+            </table>
 
         </div>
     </div>

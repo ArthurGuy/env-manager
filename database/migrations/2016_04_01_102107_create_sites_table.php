@@ -18,6 +18,7 @@ class CreateSitesTable extends Migration
             $table->longText('env');
             $table->timestamp('viewed_at')->nullable();
             $table->timestamp('edited_at')->nullable();
+            $table->timestamp('accessed_at')->nullable();
             $table->integer('viewed_by')->nullable();
             $table->integer('edited_by')->nullable();
             $table->integer('created_by')->nullable();
