@@ -27,7 +27,7 @@ class SitesController extends Controller
         
         AccessLog::recordAccess($site->id, 'view', Auth::id());
 
-        $accessLog = AccessLog::where('site_id', $site->id)->orderBy('created_at', 'desc')->take(50)->get();
+        $accessLog = AccessLog::siteHistory($site->id);
 
         return view('sites.show', ['site' => $site, 'accessLog' => $accessLog]);
     }

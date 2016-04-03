@@ -23,6 +23,11 @@ class AccessLog extends Model
         $log->save();
     }
 
+    public static function siteHistory($siteId)
+    {
+        return self::where('site_id', $siteId)->orderBy('created_at', 'desc')->take(20)->get();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -13,6 +13,8 @@ class envController extends Controller
     {
         $site = Sites::findByName($name);
 
+        $site->recordAccessed();
+
         AccessLog::recordAccess($site->id, 'access', null, $request->getClientIp());
 
         return response(base64_decode($site->env))->header('content-type', 'text/plain');

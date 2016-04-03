@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
  * @property Carbon viewed_at
  * @property Carbon edited_at
  * @property Carbon updated_at
+ * @property Carbon accessed_at
  * @property Carbon created_at
  */
 class Sites extends Model
@@ -70,6 +71,12 @@ class Sites extends Model
     {
         $this->viewed_by = $id;
         $this->viewed_at = Carbon::now();
+        $this->save();
+    }
+
+    public function recordAccessed()
+    {
+        $this->accessed_at = Carbon::now();
         $this->save();
     }
 
