@@ -27,12 +27,12 @@
 
             <pre>
                 curl {{ url('env/' . $site->name) }} -o .env-encrypted
-                aws kms decrypt --ciphertext-blob fileb://.env-encrypted --query Plaintext --output text | base64 -D > .env
+                aws kms decrypt --region {{ env('AWS_REGION', 'eu-west-1') }} --ciphertext-blob fileb://.env-encrypted --query Plaintext --output text | base64 -D > .env
             </pre>
 
             <pre>
                 curl {{ url('env/' . $site->name) }} -o .env-encrypted
-                aws kms decrypt --ciphertext-blob fileb://.env-encrypted --query Plaintext --output text | base64 -d > .env
+                aws kms decrypt --region {{ env('AWS_REGION', 'eu-west-1') }} --ciphertext-blob fileb://.env-encrypted --query Plaintext --output text | base64 -d > .env
             </pre>
 
             <h4>Access History</h4>
