@@ -23,7 +23,7 @@
                         </td>
                         <td class="table-text">
                             @if ($site->viewed_at)
-                                {{ $site->viewed_at->format('j/n/y H:i') }} by {{ $site->viewed_by()->first()->name }}
+                                {{ $site->viewed_at->setTimezone('Europe/London')->format('j/n/y H:i') }} by {{ $site->viewed_by()->first()->name }}
                             @endif
                         </td>
                         <td class="table-text">
@@ -32,7 +32,7 @@
                             @endif
                         </td>
                         <td class="table-text">
-                            {{ $site->created_at->format('j/n/y H:i') }} by {{ $site->created_by()->first()->name }}
+                            {{ $site->created_at->setTimezone('Europe/London')->format('j/n/y H:i') }} by {{ $site->created_by()->first()->name }}
                         </td>
                         <td class="table-text">
                             @if ($site->accessed_at)

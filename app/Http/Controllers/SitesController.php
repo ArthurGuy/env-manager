@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\AccessLog;
 use Auth;
+use Carbon\Carbon;
 use Validator;
 use App\Sites;
 use Illuminate\Http\Request;
