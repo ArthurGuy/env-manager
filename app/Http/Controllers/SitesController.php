@@ -16,7 +16,7 @@ class SitesController extends Controller
 
     public function index(Request $request)
     {
-        $sites = Sites::all();
+        $sites = Sites::orderBy('name', 'desc')->get();
         return view('sites.index', ['sites' => $sites]);
     }
 
