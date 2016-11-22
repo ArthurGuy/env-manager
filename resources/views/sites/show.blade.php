@@ -19,7 +19,7 @@
 
                 <fieldset class="form-group">
                     <label for="cron-command">.env</label>
-                    <textarea name="env" id="site-env" class="form-control" rows="20">{{ old('env', $site->decrypted_env) }}</textarea>
+                    <textarea name="env" id="site-env" class="form-control" rows="20" style='font-family: Menlo,Monaco,Consolas,"Courier New",monospace;'>{{ old('env', $site->decrypted_env) }}</textarea>
                 </fieldset>
 
                 <button type="submit" class="btn btn-primary">Save</button>
