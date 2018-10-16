@@ -27,7 +27,6 @@ class GitHubWebhookController extends Controller
             Rollbar::log(Level::info(), 'Github PR has been merged #' . $prNumber, $payload);
             $logged = true;
 
-
             $reviews = $this->github->pullRequest()->reviews()->all(env('REVIEW_GITHUB_ORG'), env('REVIEW_GITHUB_REPO'), $prNumber);
             Rollbar::log(Level::info(), 'Github PR reviews', $reviews);
         }

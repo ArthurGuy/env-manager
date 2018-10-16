@@ -28,9 +28,9 @@ class AppServiceProvider extends ServiceProvider
         $this->app['log']->listen(function () {
             $args = func_get_args();
 
-            $level = $args[0]->level;
-            $message = $args[0]->message;
-            $context = $args[0]->context;
+            $level = $args[0];
+            $message = $args[1];
+            $context = $args[2];
 
             Rollbar::log($level, $message, $context);
         });
