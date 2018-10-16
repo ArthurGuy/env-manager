@@ -41,4 +41,8 @@ return [
         'redirect' => '',
     ],
 
+    'rollbar' => [
+        'access_token' => env('ROLLBAR_ACCESS_TOKEN'),
+        'level'        => env('APP_LOG_LEVEL', 'debug'),
+    ],
 ];

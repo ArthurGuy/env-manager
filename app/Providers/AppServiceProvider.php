@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Rollbar\Rollbar;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -13,7 +14,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Don't register rollbar if it is not configured.
+        if (empty($this->app['config']->get('services.rollbar.access_token'))) {
+            return;
+        }
+        Rollbar::init(
+            array(
+                'access_token' => $this->app['config']->get('services.rollbar.access_token'),
+                'environment'  => $this->app->environment(),
+            )
+        );
     }
 
     /**
