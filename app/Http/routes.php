@@ -43,3 +43,7 @@ Route::group(['middleware' => 'web'], function() {
     Route::get('/env/{name}', 'envController@get')->name('env.get');
 
 });
+
+Route::group(['middleware' => 'api'], function() {
+    Route::post('/github-webhook', 'GitHubWebhookController@handle');
+});
