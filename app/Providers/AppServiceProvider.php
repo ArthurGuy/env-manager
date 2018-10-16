@@ -24,6 +24,16 @@ class AppServiceProvider extends ServiceProvider
                 'environment'  => $this->app->environment(),
             )
         );
+
+        $this->app['log']->listen(function () {
+            $args = func_get_args();
+
+            $level = $args[0]->level;
+            $message = $args[0]->message;
+            $context = $args[0]->context;
+
+            Rollbar::log($level, $message, $context);
+        });
     }
 
     /**
