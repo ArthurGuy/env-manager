@@ -20,6 +20,7 @@ class GitHubWebhookController extends Controller
             $prNumber = $payload['number'];
             $repoName = $payload['repository']['name'];
             $orgName  = $payload['organization']['login'];
+            $prUrl    = $payload['pull_request']['_links']['html']['href'];
 
             // PR has just been merged
             Rollbar::log(Level::info(), 'Github PR has been merged #' . $prNumber . ' Repo: ' . $repoName, $payload);
@@ -28,7 +29,6 @@ class GitHubWebhookController extends Controller
             $github = $this->createAuthenticatedGitHubConnection();
 
             $reviews  = collect($github->pullRequest()->reviews()->all($orgName, $repoName, $prNumber));
-            $comments = collect($github->pullRequest()->comments()->all($orgName, $repoName, $prNumber));
 
             $approvals = $reviews->filter(function ($review) {
                 return $review['state'] == 'APPROVED';
@@ -38,19 +38,16 @@ class GitHubWebhookController extends Controller
                 // This is the org and repo we are monitoring
 
                 if (env('REVIEW_SLACK_ENDPOINT')) {
-                    $client = new \Maknz\Slack\Client(env('REVIEW_SLACK_ENDPOINT'));
+                    $client = new \Maknz\Slack\Client(env('REVIEW_SLACK_ENDPOINT'), ['link_names' => true]);
 
                     if ($approvals->isEmpty()) {
                         Rollbar::warning('PR #' . $prNumber . ' doesn\'t have any approvals');
 
-                        if ($comments->isEmpty()) {
-                            $client->createMessage()->to('#' . env('REVIEW_SLACK_CHANNEL'))->attach([
-                                'text'     => 'PR #' . $prNumber,
-                                'color'    => 'danger',
-                            ])->send('@channel PR #' . $prNumber . ' has been merged in without an approval or any comments, it needs to be investigated.');
-                        } else {
-                            $client->createMessage()->send('PR #' . $prNumber . ' has been merged in without an approval.');
-                        }
+                        $client->createMessage()->to('#' . env('REVIEW_SLACK_CHANNEL'))->attach([
+                            'title'      => 'PR #' . $prNumber,
+                            'title_link' => $prUrl,
+                            'color'      => 'danger',
+                        ])->send('@channel PR #' . $prNumber . ' has been merged in without being approved, it needs to be investigated.');
                     }
                 }
             }
