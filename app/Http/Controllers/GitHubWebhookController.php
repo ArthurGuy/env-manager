@@ -44,10 +44,10 @@ class GitHubWebhookController extends Controller
                         Rollbar::warning('PR #' . $prNumber . ' doesn\'t have any approvals');
 
                         if ($comments->isEmpty()) {
-                            $client->createMessage()->to('@channel')->attach([
+                            $client->createMessage()->to('#' . env('REVIEW_SLACK_CHANNEL'))->attach([
                                 'text'     => 'PR #' . $prNumber,
                                 'color'    => 'danger',
-                            ])->send('PR #' . $prNumber . ' has been merged in without an approval or any comments, it needs to be investigated.');
+                            ])->send('@channel PR #' . $prNumber . ' has been merged in without an approval or any comments, it needs to be investigated.');
                         } else {
                             $client->createMessage()->send('PR #' . $prNumber . ' has been merged in without an approval.');
                         }
