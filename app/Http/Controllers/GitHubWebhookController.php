@@ -18,24 +18,42 @@ class GitHubWebhookController extends Controller
         $payload = json_decode($request->getContent(), true);
         if (isset($payload['pull_request']) && $payload['action'] == 'closed' && $payload['pull_request']['merged']) {
             $prNumber = $payload['number'];
+            $repoName = $payload['repository']['name'];
+            $orgName  = $payload['organization']['login'];
 
             // PR has just been merged
-            Rollbar::log(Level::info(), 'Github PR has been merged #' . $prNumber, $payload);
+            Rollbar::log(Level::info(), 'Github PR has been merged #' . $prNumber . ' Repo: ' . $repoName, $payload);
             $logged = true;
 
             $github = $this->createAuthenticatedGitHubConnection();
 
-            $reviews = collect($github->pullRequest()->reviews()->all(env('REVIEW_GITHUB_ORG'), env('REVIEW_GITHUB_REPO'), $prNumber));
+            $reviews  = collect($github->pullRequest()->reviews()->all($orgName, $repoName, $prNumber));
+            $comments = collect($github->pullRequest()->comments()->all($orgName, $repoName, $prNumber));
 
             $approvals = $reviews->filter(function ($review) {
                 return $review['state'] == 'APPROVED';
             });
 
-            if ($approvals->isEmpty()) {
-                Rollbar::warning('PR #' . $prNumber . ' doesnt have any approvals');
-            }
+            if ($orgName == env('REVIEW_GITHUB_ORG') && $repoName == env('REVIEW_GITHUB_REPO')) {
+                // This is the org and repo we are monitoring
 
-            Rollbar::log(Level::info(), 'Github PR reviews', $reviews->toArray());
+                if (env('REVIEW_SLACK_ENDPOINT')) {
+                    $client = new \Maknz\Slack\Client(env('REVIEW_SLACK_ENDPOINT'));
+
+                    if ($approvals->isEmpty()) {
+                        Rollbar::warning('PR #' . $prNumber . ' doesn\'t have any approvals');
+
+                        if ($comments->isEmpty()) {
+                            $client->createMessage()->to('@channel')->attach([
+                                'text'     => 'PR #' . $prNumber,
+                                'color'    => 'danger',
+                            ])->send('PR #' . $prNumber . ' has been merged in without an approval or any comments, it needs to be investigated.');
+                        } else {
+                            $client->createMessage()->send('PR #' . $prNumber . ' has been merged in without an approval.');
+                        }
+                    }
+                }
+            }
         }
 
         return response()->json(['status' => 'ok', 'logged' => $logged]);
