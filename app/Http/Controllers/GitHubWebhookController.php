@@ -21,6 +21,8 @@ class GitHubWebhookController extends Controller
             $repoName = $payload['repository']['name'];
             $orgName  = $payload['organization']['login'];
             $prUrl    = $payload['pull_request']['_links']['html']['href'];
+            $prTitle  = $payload['pull_request']['title'];
+            $mergedBy = $payload['pull_request']['merged_by']['login'];
 
             // PR has just been merged
             Rollbar::log(Level::info(), 'Github PR has been merged #' . $prNumber . ' Repo: ' . $repoName, $payload);
@@ -41,13 +43,13 @@ class GitHubWebhookController extends Controller
                     $client = new \Maknz\Slack\Client(env('REVIEW_SLACK_ENDPOINT'), ['link_names' => true]);
 
                     if ($approvals->isEmpty()) {
-                        Rollbar::warning('PR #' . $prNumber . ' doesn\'t have any approvals');
+                        //Rollbar::warning('PR #' . $prNumber . ' doesn\'t have any approvals');
 
                         $client->createMessage()->to('#' . env('REVIEW_SLACK_CHANNEL'))->attach([
-                            'title'      => 'PR #' . $prNumber,
+                            'title'      => $prTitle,
                             'title_link' => $prUrl,
                             'color'      => 'danger',
-                        ])->send('@channel PR #' . $prNumber . ' has been merged in without being approved, it needs to be investigated.');
+                        ])->send('@channel PR #' . $prNumber . ' has been merged in by ' . $mergedBy . ' without being approved, an explanation needs to be provided.');
                     }
                 }
             }
