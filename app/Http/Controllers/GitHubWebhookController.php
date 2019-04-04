@@ -30,7 +30,7 @@ class GitHubWebhookController extends Controller
 
             $github = $this->createAuthenticatedGitHubConnection();
 
-            $reviews  = collect($github->pullRequest()->reviews()->all($orgName, $repoName, $prNumber));
+            $reviews  = collect($github->pullRequest()->reviews()->all($orgName, $repoName, $prNumber, ['per_page' => 100]));
 
             $approvals = $reviews->filter(function ($review) {
                 return $review['state'] == 'APPROVED';
